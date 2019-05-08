@@ -8,7 +8,7 @@ K-近邻算法（KNN）
     (5) 测试算法：计算错误率。
     (6) 使用算法：首先需要输入样本数据和结构化的输出结果，然后运行KNN算法判定输入数据分别属于哪个分类，最后应用对计算出的分类执行后续处理
 """
-from numpy import *  # numpy\n
+from numpy import *  # numpy
 import operator  # 运算符
 
 def createDataSet():
