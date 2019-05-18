@@ -1,5 +1,5 @@
 """
-K-近邻算法（KNN）
+K-近邻算法（KNN: K Nearest Neighbors）
 一般流程：
     (1) 收集数据：可以使用任何方法
     (2) 准备数据：距离计算所需要的数值，最好是结构化的数据
@@ -8,14 +8,14 @@ K-近邻算法（KNN）
     (5) 测试算法：计算错误率。
     (6) 使用算法：首先需要输入样本数据和结构化的输出结果，然后运行KNN算法判定输入数据分别属于哪个分类，最后应用对计算出的分类执行后续处理
 """
-from numpy import *  # numpy
+from numpy import *  # numpy\n
 import operator  # 运算符
 
 def createDataSet():
     # 添加已有数据信息
     group = array([[1.0, 1.1], [1.0, 1.0], [0, 0], [0, 0.1]])  # 数据的坐标信息（数据集）
     labels = ['A', 'A', 'B', 'B']  # 数据点的分类标签信息
-    return group, labels
+    return group, labels # 返回数据集和标签
 
 """
 对未知类别属性的数据集中的每个点依次执行以下操作：
@@ -28,7 +28,7 @@ def createDataSet():
 def classify0(inX, dataSet, labels, k):
     """
     K-近邻算法
-    inX：- 用于分类的数据(测试集)
+    inX - 用于分类的数据(测试集)
     dataSet - 用于训练的数据(训练集)
     labes - 分类标签
     k - kNN算法参数,选择最近邻居的数目（距离最小的k个点）
@@ -60,3 +60,46 @@ def classify0(inX, dataSet, labels, k):
     # key = operator.itemgetter(0)根据字典的键进行排序
     # reverse降序排序字典
     sortedClassCount = sorted(classCount.items(), key = operator.itemgetter(1), reverse = True)
+    # 返回计数最大的值所对应的标签
+    return sortedClassCount[0][0]
+
+"""
+在约会网站上使用K-近邻算法：
+    (1) 收集数据：提供文本文件; 
+    (2) 准备数据：使用 Python 解析文本文件;
+    (3) 分析数据：使用 Matplotlib 画二维扩散（散点）图; 
+    (4) 训练算法：此步骤不适用于 k-近邻算法; 
+    (5) 测试算法：使用海伦提供的部分数据作为测试样本;         
+        测试样本和非测试样本的区别在于: 测试样本是已经完成分类的数据，如果预测分类与实际类别不同，则标记为一个错误
+    (6) 使用算法：产生简单的命令行程序，然后海伦可以输入一些特征数据以判断对方是否为自己喜欢的类型。
+"""
+def file2matrix(filename):
+    """
+    将文本数据转换成Numpy的解析程序
+    filename - 数据文件路径
+    """
+    # 打开文件
+    fr = open(filename)
+    # 逐行读取文件内容
+    arrayOLines = fr.readlines()
+    # 获得文件的数据行的行数
+    numberOfLines = len(arrayOLines)
+    # 创建一个numberOfLines行，3列，元素全为0的矩阵
+    returnMat = zeros((numberOfLines,3))
+    # 创建一个空矩阵，存放标签
+    classLabelVector = []
+    # 行的索引
+    index = 0
+    for line in arrayOLines:
+        # 默认删除字符串头尾的空白符如: '\n', '\t', '\r' , ' '
+        line = line.strip()
+        # 将字符串按照'\t'进行分隔
+        listFromLine = line.split('\t')
+        # 将数据前3列数据取出放在returnMat矩阵中
+        returnMat[index,:] = listFromLine[0:3]
+        # 将数据最后1列取出放在classLabelVector中
+        classLabelVector.append(listFromLine[-1])
+        # 索引加1
+        index += 1
+    # 返回特征矩阵以及对应类别的分类标签
+    return returnMat,classLabelVector
