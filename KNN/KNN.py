@@ -143,10 +143,10 @@ def datingClassTest():
         # 第i行的所有数据作为测试集，从0到m所有数据作为训练集，标签数据为从0到m的数据标签，k值选为前3个
         classifierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:],datingLabels[numTestVecs:m],3)
         # 输出测试结果和实际结果
-        print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, datingLabels[i]))
+        print("the classifier came back with: %d, the real answer is: %d" %(int(classifierResult), int(datingLabels[i])))
         # 测试结果若和实际结果不同则错误加1
         if (classifierResult != datingLabels[i]): errorCount += 1.0
     # 输出错误率
-    print("the total error rate is: %f" % (errorCount/float(numTestVecs)))
+    print("the total error rate is: %f" %(errorCount/float(numTestVecs)))
     # 输出错误数
     print(errorCount)
