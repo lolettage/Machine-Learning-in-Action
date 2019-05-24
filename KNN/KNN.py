@@ -103,3 +103,50 @@ def file2matrix(filename):
         index += 1
     # 返回特征矩阵以及对应类别的分类标签
     return returnMat,classLabelVector
+
+def autoNorm(dataSet):
+    """
+    归一化公式: newValue = (oldValue - min) / (max - min)
+    """
+    # 每一列最小值
+    minVals = dataSet.min(0)
+    # 每一列最大值
+    maxVals = dataSet.max(0)
+    # 每一列最大值和最小值的差
+    ranges = maxVals - minVals
+    # 创建一个与dataSet行列数相同，元素全为0的矩阵
+    normDataSet = zeros(shape(dataSet))
+    # 返回行数
+    m = dataSet.shape[0]
+    # 矩阵相减，用dataSet减去m行1列全为minValue的矩阵
+    normDataSet = dataSet - tile(minVals, (m,1))
+    # 用normDataSet除以m行1列全为ranges的矩阵（仅为矩阵对应位置的元素值相除）
+    normDataSet = normDataSet/tile(ranges, (m,1))   
+    # 返回normDataSet, ranges和minVals
+    return normDataSet, ranges, minVals
+
+def datingClassTest():
+    # 预留出10%的数据作为测试集验证准确率
+    hoRatio = 0.50  
+    # 读取文件中的数据以及标签
+    datingDataMat,datingLabels = file2matrix('datingTestSet2.txt')    
+    # 将数据进行归一化处理
+    normMat, ranges, minVals = autoNorm(datingDataMat)
+    # 得到数据的行数
+    m = normMat.shape[0]
+    # 得到测试数据的行数
+    numTestVecs = int(m * hoRatio)
+    # 错误计数
+    errorCount = 0.0
+    for i in range(numTestVecs):
+        # KNN算法（测试集，训练集，标签，k）
+        # 第i行的所有数据作为测试集，从0到m所有数据作为训练集，标签数据为从0到m的数据标签，k值选为前3个
+        classifierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:],datingLabels[numTestVecs:m],3)
+        # 输出测试结果和实际结果
+        print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, datingLabels[i]))
+        # 测试结果若和实际结果不同则错误加1
+        if (classifierResult != datingLabels[i]): errorCount += 1.0
+    # 输出错误率
+    print("the total error rate is: %f" % (errorCount/float(numTestVecs)))
+    # 输出错误数
+    print(errorCount)
